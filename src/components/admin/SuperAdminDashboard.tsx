@@ -39,6 +39,7 @@ import JobPortalAdmin from "./JobPortalAdmin";
 import AppAnalytics from "./AppAnalytics";
 import SupportAdmin from "./SupportAdmin";
 import DistrictExpansion from "./DistrictExpansion";
+import AjmerPilotExecution from "./AjmerPilotExecution";
 
 interface SuperAdminDashboardProps {
   navigateTo: (path: string) => void;
@@ -50,7 +51,7 @@ export default function SuperAdminDashboard({ navigateTo }: SuperAdminDashboardP
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   // Tabs: overview | approvals | qr_settings | qr_payments | referral_settings | membership_plans | finance | growth_partners | brands | jobs | district_expansion
-  const [activeTab, setActiveTab] = useState<"overview" | "approvals" | "qr_settings" | "qr_payments" | "referral_settings" | "membership_plans" | "finance" | "growth_partners" | "brands" | "jobs" | "district_expansion" | "support" | "app_analytics">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "approvals" | "qr_settings" | "qr_payments" | "referral_settings" | "membership_plans" | "finance" | "growth_partners" | "brands" | "jobs" | "district_expansion" | "support" | "app_analytics" | "ajmer_pilot">("overview");
 
   // QR Payments state
   const [paymentRecords, setPaymentRecords] = useState<any[]>([]);
@@ -779,7 +780,8 @@ export default function SuperAdminDashboard({ navigateTo }: SuperAdminDashboardP
             { id: "jobs", label: "Job Portal", icon: Briefcase },
             { id: "support", label: "Support & Trust", icon: ShieldCheck },
             { id: "app_analytics", label: "App Analytics", icon: Smartphone },
-            { id: "district_expansion", label: "District Expansion", icon: MapPin }
+            { id: "district_expansion", label: "District Expansion", icon: MapPin },
+            { id: "ajmer_pilot", label: "Ajmer Pilot Execution", icon: Globe }
           ].map(tab => {
             const Icon = tab.icon;
             return (
@@ -1232,6 +1234,9 @@ export default function SuperAdminDashboard({ navigateTo }: SuperAdminDashboardP
         {/* Tab District Expansion */}
         {activeTab === "district_expansion" && (
             <DistrictExpansion />
+        )}
+        {activeTab === "ajmer_pilot" && (
+            <AjmerPilotExecution />
         )}
 
       </main>
