@@ -357,6 +357,61 @@ export default function App() {
     }, 5000);
   };
 
+  // 30-Minute Inactivity Auto-Logout for Admin and Owner Dashboards
+  useEffect(() => {
+    const isSensitiveDashboard = 
+      currentPath.startsWith("/admin") || 
+      currentPath.startsWith("/owner-dashboard") || 
+      currentPath.startsWith("/owner-create-website") || 
+      currentPath.startsWith("/post-job");
+
+    if (!session || !isSensitiveDashboard) {
+      return;
+    }
+
+    const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+    let timeoutId: NodeJS.Timeout;
+
+    const handleLogout = async () => {
+      try {
+        await supabase.auth.signOut();
+        navigateTo("/login");
+        triggerToast("⚠️ Auto-logout: You have been logged out due to 30 minutes of inactivity.");
+      } catch (err) {
+        console.error("Auto-logout error:", err);
+      }
+    };
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleLogout, INACTIVITY_TIMEOUT);
+    };
+
+    const activityEvents = ["mousedown", "mousemove", "keypress", "scroll", "touchstart", "click"];
+    
+    let lastActivityTime = Date.now();
+    const handleUserActivity = () => {
+      const now = Date.now();
+      if (now - lastActivityTime > 1000) {
+        lastActivityTime = now;
+        resetTimer();
+      }
+    };
+
+    activityEvents.forEach((event) => {
+      window.addEventListener(event, handleUserActivity, { passive: true });
+    });
+
+    resetTimer();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      activityEvents.forEach((event) => {
+        window.removeEventListener(event, handleUserActivity);
+      });
+    };
+  }, [session, currentPath]);
+
   // Manual section scrolling
   const handleNavigateSection = (sectionId: string) => {
     if (sectionId === "top") {

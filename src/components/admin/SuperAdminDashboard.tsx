@@ -38,6 +38,7 @@ import BrandsSection from "./BrandsSection";
 import JobPortalAdmin from "./JobPortalAdmin";
 import AppAnalytics from "./AppAnalytics";
 import SupportAdmin from "./SupportAdmin";
+import DistrictExpansion from "./DistrictExpansion";
 
 interface SuperAdminDashboardProps {
   navigateTo: (path: string) => void;
@@ -48,8 +49,8 @@ export default function SuperAdminDashboard({ navigateTo }: SuperAdminDashboardP
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
-  // Tabs: overview | approvals | qr_settings | qr_payments | referral_settings | membership_plans | finance | growth_partners | brands | jobs
-  const [activeTab, setActiveTab] = useState<"overview" | "approvals" | "qr_settings" | "qr_payments" | "referral_settings" | "membership_plans" | "finance" | "growth_partners" | "brands" | "jobs">("overview");
+  // Tabs: overview | approvals | qr_settings | qr_payments | referral_settings | membership_plans | finance | growth_partners | brands | jobs | district_expansion
+  const [activeTab, setActiveTab] = useState<"overview" | "approvals" | "qr_settings" | "qr_payments" | "referral_settings" | "membership_plans" | "finance" | "growth_partners" | "brands" | "jobs" | "district_expansion" | "support" | "app_analytics">("overview");
 
   // QR Payments state
   const [paymentRecords, setPaymentRecords] = useState<any[]>([]);
@@ -777,7 +778,8 @@ export default function SuperAdminDashboard({ navigateTo }: SuperAdminDashboardP
             { id: "brands", label: "Brand Management", icon: Building2 },
             { id: "jobs", label: "Job Portal", icon: Briefcase },
             { id: "support", label: "Support & Trust", icon: ShieldCheck },
-            { id: "app_analytics", label: "App Analytics", icon: Smartphone }
+            { id: "app_analytics", label: "App Analytics", icon: Smartphone },
+            { id: "district_expansion", label: "District Expansion", icon: MapPin }
           ].map(tab => {
             const Icon = tab.icon;
             return (
@@ -1225,6 +1227,11 @@ export default function SuperAdminDashboard({ navigateTo }: SuperAdminDashboardP
         {/* Tab App Analytics */}
         {activeTab === "app_analytics" && (
             <AppAnalytics />
+        )}
+
+        {/* Tab District Expansion */}
+        {activeTab === "district_expansion" && (
+            <DistrictExpansion />
         )}
 
       </main>

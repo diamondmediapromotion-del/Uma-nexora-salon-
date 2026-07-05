@@ -8,6 +8,7 @@ import {
   CheckCircle, 
   X, 
   AlertCircle, 
+  AlertTriangle,
   Globe, 
   ShieldCheck, 
   FileText,
@@ -48,6 +49,7 @@ export default function PartnerDashboard({ navigateTo }: PartnerDashboardProps) 
 
   // Data States
   const [assignments, setAssignments] = useState<any[]>([]);
+  const [districtAssignments, setDistrictAssignments] = useState<any[]>([]);
   const [assignedShops, setAssignedShops] = useState<Record<string, any>>({});
   const [ledger, setLedger] = useState<any[]>([]);
   const [milestones, setMilestones] = useState<any[]>([]);
@@ -250,6 +252,18 @@ export default function PartnerDashboard({ navigateTo }: PartnerDashboardProps) 
 
       const assignmentList = assignData || [];
       setAssignments(assignmentList);
+
+      // Fetch District Expansion Pilot Assignments
+      try {
+        const { data: distAsgData } = await supabase
+          .from("district_partner_assignments")
+          .select("*, district_launches(*)")
+          .eq("partner_id", profile.id)
+          .eq("is_active", true);
+        setDistrictAssignments(distAsgData || []);
+      } catch (distErr) {
+        console.error("Error fetching district assignments:", distErr);
+      }
 
       // Fetch shops linked to assignments securely
       if (assignmentList.length > 0) {
@@ -847,6 +861,79 @@ export default function PartnerDashboard({ navigateTo }: PartnerDashboardProps) 
             <p className="text-[9px] text-slate-400 font-medium">awaiting weekly release</p>
           </div>
         </div>
+
+        {/* District Expansion Assignments */}
+        {districtAssignments && districtAssignments.length > 0 && (
+          <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-blue-600 animate-pulse" />
+              <h2 className="text-lg font-black text-slate-900 tracking-tight">Active District Pilot Assignments</h2>
+            </div>
+
+            {/* Compliance warning banner */}
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100/50 text-amber-900 text-xs font-semibold leading-relaxed space-y-1">
+              <div className="flex items-center gap-1.5 font-bold">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <span>PARTNER COMPLIANCE PROTOCOL</span>
+              </div>
+              <ul className="list-disc pl-5 space-y-0.5">
+                <li>Never promise arbitrary or fake earnings to salon owners.</li>
+                <li>Do NOT perform direct cash collections under any circumstances.</li>
+                <li>Do NOT share or create any owner QR codes.</li>
+                <li>Use clean and standard salon operational training; avoid MLM, franchise, or job wording.</li>
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {districtAssignments.map((da) => {
+                const launch = da.district_launches;
+                return (
+                  <div key={da.id} className="p-5 rounded-2xl border border-slate-100 bg-slate-50/50 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="px-2 py-0.5 bg-blue-50 border border-blue-100 text-blue-700 text-[9px] font-black tracking-wider uppercase rounded-full">
+                          {launch?.launch_status?.toUpperCase() || "PILOT"}
+                        </span>
+                        <h3 className="font-bold text-base text-slate-900 mt-1">{launch?.district_name || "District Pilot"}</h3>
+                        <p className="text-xs text-slate-400 font-medium">{launch?.state_name || "Rajasthan"}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block">LAUNCH CODE</span>
+                        <span className="text-xs font-mono font-bold text-slate-700">{launch?.launch_code || "N/A"}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 border-t border-b border-slate-100 py-3">
+                      <div className="flex justify-between text-xs font-semibold">
+                        <span className="text-slate-400">Assigned Areas</span>
+                        <span className="text-slate-800">{da.assigned_area_names?.join(", ") || "All Areas"}</span>
+                      </div>
+                      <div className="flex justify-between text-xs font-semibold">
+                        <span className="text-slate-400">Leads Target</span>
+                        <span className="text-slate-800">{da.leads_added} / {da.target_leads} leads</span>
+                      </div>
+                      <div className="flex justify-between text-xs font-semibold">
+                        <span className="text-slate-400">Ready Shops Target</span>
+                        <span className="text-slate-800">{da.shops_ready} / {da.target_ready_shops} salons</span>
+                      </div>
+                      <div className="flex justify-between text-xs font-semibold">
+                        <span className="text-slate-400">Active Onboarded Salons</span>
+                        <span className="text-slate-800 font-bold text-emerald-600">{da.shops_active} salons</span>
+                      </div>
+                    </div>
+
+                    {da.notes && (
+                      <div className="p-3 bg-white border border-slate-100 rounded-xl text-2xs font-semibold text-slate-500">
+                        <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-0.5">Admin Notes</span>
+                        {da.notes}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Updated Tabs Bar with 10 Tabs */}
         <div className="flex border-b border-slate-200 gap-6 overflow-x-auto scrollbar-none pb-1">

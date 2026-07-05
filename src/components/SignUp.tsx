@@ -205,6 +205,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
               </span>
               <input
                 type="text"
+                name="name"
+                autoComplete="name"
                 value={fullName}
                 onChange={(e) => handleInputChange(setFullName, e.target.value)}
                 placeholder="John Doe"
@@ -225,6 +227,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
               </span>
               <input
                 type="email"
+                name="email"
+                autoComplete="username email"
                 value={email}
                 onChange={(e) => handleInputChange(setEmail, e.target.value)}
                 placeholder="john@example.com"
@@ -245,6 +249,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
               </span>
               <input
                 type="tel"
+                name="phone"
+                autoComplete="tel"
                 value={phone}
                 onChange={(e) => handleInputChange(setPhone, e.target.value)}
                 placeholder="+91 98765 43210"
@@ -267,6 +273,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
                 </span>
                 <input
                   type="text"
+                  name="city"
+                  autoComplete="address-level2"
                   value={city}
                   onChange={(e) => handleInputChange(setCity, e.target.value)}
                   placeholder="Jaipur"
@@ -287,6 +295,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
                 </span>
                 <input
                   type="text"
+                  name="area"
+                  autoComplete="address-line2"
                   value={area}
                   onChange={(e) => handleInputChange(setArea, e.target.value)}
                   placeholder="Malviya Nagar"
@@ -304,6 +314,7 @@ export default function SignUp({ navigateTo }: SignUpProps) {
             </label>
             <div className="relative">
               <select
+                name="role"
                 value={role}
                 onChange={(e) => handleInputChange(setRole, e.target.value)}
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-100 focus:border-blue-500 focus:bg-white rounded-2xl text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none transition-all appearance-none cursor-pointer"
@@ -331,6 +342,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
               </span>
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => {
                   handleInputChange(setPassword, e.target.value);
@@ -371,6 +384,8 @@ export default function SignUp({ navigateTo }: SignUpProps) {
               </span>
               <input
                 type={showConfirmPassword ? "text" : "password"}
+                name="confirm-password"
+                autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => handleInputChange(setConfirmPassword, e.target.value)}
                 onBlur={() => {
