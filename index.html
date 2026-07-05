@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      // Fix sandboxed iframe environment where window.fetch has only a getter
+      (function() {
+        try {
+          if (typeof window !== 'undefined') {
+            // Ensure FormData has keys so formdata-polyfill doesn't load/patch fetch
+            if (window.FormData && !window.FormData.prototype.keys) {
+              window.FormData.prototype.keys = function* () {
+                for (const key of Object.keys(this)) {
+                  yield key;
+                }
+              };
+            }
+            
+            // Make window.fetch writable/swallow assignments to prevent setter errors
+            const originalFetch = window.fetch;
+            if (originalFetch) {
+              Object.defineProperty(window, 'fetch', {
+                get() {
+                  return originalFetch;
+                },
+                set(v) {
+                  // Swallow setter assignments safely
+                  console.info("Swallowed fetch assignment in sandboxed environment");
+                },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          }
+        } catch (e) {
+          console.warn("Fetch polyfill wrapper error ignored:", e);
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Nexora SalonOS</title>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('SW registered:', registration);
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed:', registrationError);
+            });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

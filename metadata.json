@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Nexora SalonOS",
+  "description": "Premium SaaS + marketplace platform for India\u0027s beauty industry. Upgrade your salon experience with verified bookings, QR rewards, and free digital tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
