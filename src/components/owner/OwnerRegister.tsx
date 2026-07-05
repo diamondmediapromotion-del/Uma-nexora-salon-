@@ -102,6 +102,7 @@ export default function OwnerRegister({ navigateTo }: OwnerRegisterProps) {
     }
   };
 
+
   useEffect(() => {
     checkAuth();
   }, []);
@@ -432,6 +433,7 @@ export default function OwnerRegister({ navigateTo }: OwnerRegisterProps) {
 
       setSuccess(true);
       localStorage.removeItem("nexora_owner_registration_draft");
+      localStorage.removeItem("nexora_owner_registration_draft");
     } catch (err: any) {
       console.error("Registration error:", err);
       setError(err.message || "Something went wrong during registration. Please try again.");
@@ -526,6 +528,58 @@ export default function OwnerRegister({ navigateTo }: OwnerRegisterProps) {
               {(draftStatus === "saved" || draftStatus === "restored") && (
                 <button type="button" onClick={clearDraft} className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer bg-rose-50 px-3 py-1 rounded-full">
                   Clear All
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between overflow-x-auto no-scrollbar pb-2 px-2 snap-x">
+            {[
+              { id: 1, label: "Owner Details" },
+              { id: 2, label: "Business Details" },
+              { id: 3, label: "Timing" },
+              { id: 4, label: "Website Setup" },
+              { id: 5, label: "Services" },
+            ].map((step, idx) => {
+              const isCompleted = currentStep > step.id;
+              const isActive = currentStep === step.id;
+              return (
+                <div key={step.id} className="flex items-center shrink-0 snap-start">
+                  <div className={"flex flex-col items-center gap-2 " + (isActive ? 'opacity-100' : isCompleted ? 'opacity-100' : 'opacity-40')}>
+                    <div className={"w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all border-2 " +
+                      (isActive ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20' : 
+                        isCompleted ? 'bg-emerald-50 border-emerald-500 text-emerald-600' : 
+                        'bg-slate-50 border-slate-200 text-slate-400')
+                    }>
+                      {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : step.id}
+                    </div>
+                    <span className={"text-[10px] font-bold uppercase tracking-wider " + (isActive ? 'text-blue-600' : isCompleted ? 'text-emerald-600' : 'text-slate-400')}>
+                      {step.label}
+                    </span>
+                  </div>
+                  {idx < 4 && (
+                    <div className={"w-8 sm:w-16 h-[2px] mx-2 sm:mx-4 rounded-full " + (isCompleted ? 'bg-emerald-200' : 'bg-slate-100')} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        
+        {/* Progress Stepper & Draft Status */}
+        <div className="mb-8 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3 px-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Registration Progress</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+                {draftStatus === "saving" && <><span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Saving draft...</>}
+                {draftStatus === "saved" && <><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Draft saved</>}
+                {draftStatus === "restored" && <><Sparkles className="w-3.5 h-3.5 text-blue-500" /> Draft restored</>}
+                {draftStatus === "cleared" && <><AlertCircle className="w-3.5 h-3.5 text-amber-500" /> Draft cleared</>}
+              </span>
+              {(draftStatus === "saved" || draftStatus === "restored") && (
+                <button type="button" onClick={clearDraft} className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer bg-rose-50 px-3 py-1 rounded-full">
+                  Clear Draft
                 </button>
               )}
             </div>
